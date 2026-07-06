@@ -695,7 +695,6 @@ function RequestForm() {
 function App() {
   return (
     <div id="top">
-      <DraftRibbon />
       <OnePagerNav />
       <Hero />
       <VideoSection />
