@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>P2P · Procure-to-Pay Intelligence System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --navy: #1E2856;
+      --navy-deep: #14193A;
+      --navy-lo: #2A356D;
+      --navy-50: #7A86B8;
+      --red: #C32A2E;
+      --red-soft: #D86A6D;
+      --ink: #0D1230;
+      --slate: #3A3F55;
+      --muted: #6B6E7D;
+      --sand: #EAEEF7;
+      --cream: #EFF2FA;
+      --paper: #F4F6FC;
+      --line: rgba(30,40,86,0.07);
+      --line2: rgba(30,40,86,0.12);
+      --ok: #0E7C44;
+    }
+    html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+    body { margin: 0; color: var(--ink);
+           font-family: 'Manrope', system-ui, sans-serif;
+           background:
+             radial-gradient(1100px 720px at 88% -8%, rgba(195,42,46,0.055), transparent 58%),
+             radial-gradient(1000px 820px at -6% 4%, rgba(30,40,86,0.07), transparent 56%),
+             radial-gradient(1200px 900px at 50% 118%, rgba(30,40,86,0.06), transparent 60%),
+             var(--paper);
+           background-attachment: fixed;
+           -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    .grotesk { font-family: 'Space Grotesk', sans-serif; }
+    .news    { font-family: 'Newsreader', serif; }
+    .plex    { font-family: 'IBM Plex Sans', sans-serif; }
+    .mono    { font-family: 'JetBrains Mono', monospace; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+    ::selection { background: rgba(195,42,46,0.16); }
+  </style>
+</head>
+<body>
+  <template id="__bundler_thumbnail" data-bg-color="#1E2856">
+    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(600 360)" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="78">
+        <path d="M -250 -170 L 0 0 L -250 170" stroke="#ffffff" />
+        <path d="M 10 -170 L 260 0 L 10 170" stroke="#C32A2E" />
+      </g>
+      <text x="600" y="640" text-anchor="middle" font-family="'Space Grotesk', system-ui, sans-serif"
+            font-size="120" font-weight="700" letter-spacing="-6" fill="#ffffff">
+        P<tspan fill="#C32A2E">2</tspan>P
+      </text>
+    </svg>
+  </template>
+
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="modern-marks.jsx"></script>
+  <script type="text/babel" src="site-ui.jsx"></script>
+  <script type="text/babel" src="site-sections.jsx"></script>
+  <script>
+    // One-pager: rewrite shared Footer links to in-page anchors (no cross-page nav).
+    window.__P2P_PAGES = {
+      home: '#top', platform: '#platform', pricing: '#pricing',
+      customers: '#customers', readiness: '#readiness', about: '#about', signin: '#cta',
+    };
+  </script>
+  <script type="text/babel" src="site-chrome.jsx"></script>
+  <script type="text/babel" src="site-onepager.jsx"></script>
+
+  <script>
+    // Soft-premium scroll-reveal via the Web Animations API.
+    // Nothing is hidden in CSS, so the page can NEVER render blank — each section just
+    // plays a one-shot fade-up as it enters view and settles back to fully visible.
+    (function () {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+      function vh() { return window.innerHeight || document.documentElement.clientHeight || 800; }
+      function play(s, delay) {
+        s.__revealed = true;
+        if (!s.animate) return;
+        try {
+          s.animate(
+            [{ opacity: 0, transform: 'translateY(28px)' }, { opacity: 1, transform: 'none' }],
+            { duration: 720, delay: delay || 0, easing: 'cubic-bezier(0.22,0.61,0.36,1)', fill: 'backwards' }
+          );
+        } catch (e) { /* base state is visible — safe to ignore */ }
+      }
+      var pending = [];
+      function check() {
+        pending = pending.filter(function (s) {
+          if (s.getBoundingClientRect().top < vh() * 0.88) { play(s, 0); return false; }
+          return true;
+        });
+      }
+      function setup() {
+        var root = document.getElementById('root');
+        var secs = root ? root.querySelectorAll('section') : [];
+        if (!secs.length) { return setTimeout(setup, 150); }   // wait for React to mount
+        var inView = 0;
+        Array.prototype.forEach.call(secs, function (s) {
+          if (s.getBoundingClientRect().top >= vh() * 0.88) { pending.push(s); }  // below fold → on scroll
+          else { play(s, (inView++) * 90); }                                      // in view → gentle intro
+        });
+        var ticking = false;
+        window.addEventListener('scroll', function () {
+          if (!ticking) { ticking = true; requestAnimationFrame(function () { check(); ticking = false; }); }
+        }, { passive: true });
+        window.addEventListener('resize', function () { check(); }, { passive: true });
+      }
+      function start() {
+        var go = function () { requestAnimationFrame(function () { requestAnimationFrame(setup); }); };
+        if (document.fonts && document.fonts.ready) { document.fonts.ready.then(go); setTimeout(go, 700); }
+        else go();
+      }
+      if (document.readyState === 'complete') start();
+      else window.addEventListener('load', start);
+    })();
+  </script>
+</body>
+</html>
