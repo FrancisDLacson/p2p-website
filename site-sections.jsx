@@ -19,67 +19,178 @@ function ChevTick({ color = RED, size = 14 }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// HERO
+// VIDEO MODAL — fullscreen Vimeo overlay, shared across the site
+// ═══════════════════════════════════════════════════════════════════════════
+const VIMEO_SRC = 'https://player.vimeo.com/video/1205807635?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1';
+
+function VideoModal({ open, onClose }) {
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prev; };
+  }, [open, onClose]);
+  if (!open) return null;
+  return (
+    <div onClick={onClose}
+         style={{ position: 'fixed', inset: 0, zIndex: 9000, background: 'rgba(9,12,30,0.92)',
+                  backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(16px, 4vw, 56px)' }}>
+      <button onClick={onClose} aria-label="Close video" className="grotesk"
+              style={{ position: 'absolute', top: 22, right: 24, width: 44, height: 44, borderRadius: '50%',
+                       border: '1px solid rgba(255,255,255,0.25)', background: 'rgba(255,255,255,0.08)',
+                       color: '#fff', fontSize: 22, cursor: 'pointer', lineHeight: 1, display: 'flex',
+                       alignItems: 'center', justifyContent: 'center' }}>×</button>
+      <div onClick={e => e.stopPropagation()}
+           style={{ width: '100%', maxWidth: 1180, aspectRatio: '16 / 9', borderRadius: 16, overflow: 'hidden',
+                    boxShadow: '0 40px 120px rgba(0,0,0,0.6)', background: '#000' }}>
+        <iframe src={VIMEO_SRC} title="P2P product tour"
+                frameBorder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                style={{ width: '100%', height: '100%', border: 0 }} />
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LIFECYCLE FLOW — brief, visual "what you're looking at" strip
+// ═══════════════════════════════════════════════════════════════════════════
+function LifecycleFlow() {
+  const stages = [
+    { t: 'Solicitation', d: 'RFPs & bids' },
+    { t: 'Award', d: 'Vendor & contract' },
+    { t: 'PO', d: 'Purchase orders' },
+    { t: 'Receipt', d: 'Goods & services' },
+    { t: 'Invoice', d: 'Matching & approval' },
+    { t: 'Payment', d: 'Disbursement' },
+  ];
+  return (
+    <div style={{ marginTop: 52, borderRadius: 20, padding: '30px 30px 32px', position: 'relative',
+                  overflow: 'hidden', color: '#fff',
+                  background: `linear-gradient(135deg, ${NAVY_DEEP} 0%, ${NAVY} 62%, ${NAVY_LO} 130%)`,
+                  boxShadow: '0 30px 70px -34px rgba(20,25,58,0.55)' }}>
+      {/* soft red glow accent */}
+      <div style={{ position: 'absolute', top: -80, right: -60, width: 320, height: 320, borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(195,42,46,0.28), transparent 68%)', pointerEvents: 'none' }} />
+      <div className="plex" style={{ position: 'relative', fontSize: 10.5, color: RED_SOFT, letterSpacing: '0.16em',
+                                      textTransform: 'uppercase', fontWeight: 700, marginBottom: 18 }}>
+        One system of intelligence across the whole lifecycle
+      </div>
+      <div className="lifecycle-tiles" style={{ position: 'relative', display: 'flex', alignItems: 'stretch', gap: 6, flexWrap: 'wrap' }}>
+        {stages.map((s, i) => (
+          <React.Fragment key={s.t}>
+            <div className="flow-tile" style={{ flex: '1 1 0', minWidth: 96, background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.11)', borderRadius: 12, padding: '14px 15px',
+                          position: 'relative', backdropFilter: 'blur(2px)' }}>
+              <div className="mono" style={{ fontSize: 10, color: RED_SOFT, fontWeight: 700, marginBottom: 6 }}>
+                {String(i + 1).padStart(2, '0')}
+              </div>
+              <div className="grotesk" style={{ fontSize: 15, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>{s.t}</div>
+              <div className="plex" style={{ fontSize: 11, color: 'rgba(255,255,255,0.58)', marginTop: 2 }}>{s.d}</div>
+            </div>
+            {i < stages.length - 1 && (
+              <div className="flow-chev" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                <ChevTick color={RED_SOFT} size={16} />
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HERO — copy on the left, playable product video on the right
 // ═══════════════════════════════════════════════════════════════════════════
 function Hero() {
+  const [modal, setModal] = React.useState(false);
+  const [hover, setHover] = React.useState(false);
   return (
     <section style={{ position: 'relative', overflow: 'hidden',
                       background: 'radial-gradient(1150px 640px at 82% -6%, rgba(195,42,46,0.06), transparent 60%)' }}>
-      <Container style={{ paddingTop: 92, paddingBottom: 104 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.05fr 0.95fr', gap: 56, alignItems: 'center' }}>
+      <Container style={{ paddingTop: 84, paddingBottom: 72 }}>
+        <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.02fr 0.98fr', gap: 56, alignItems: 'center' }}>
           {/* left */}
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(195,42,46,0.09)',
-                          color: RED, borderRadius: 999, padding: '7px 14px', fontWeight: 700, fontSize: 11.5,
-                          letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: "'Manrope', sans-serif",
-                          whiteSpace: 'nowrap' }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: RED }} />
-              45-day deployment · go-live guaranteed
-            </div>
-            <h1 className="grotesk" style={{ fontSize: 'clamp(42px, 5.4vw, 70px)', fontWeight: 700, color: INK,
-                                              letterSpacing: '-0.042em', lineHeight: 0.98, margin: '22px 0 0' }}>
+            <h1 className="grotesk" style={{ fontSize: 'clamp(38px, 4.8vw, 62px)', fontWeight: 700, color: INK,
+                                              letterSpacing: '-0.042em', lineHeight: 0.98, margin: '0' }}>
               Intelligence for the<br /><span style={{ color: RED }}>procure-to-pay</span> lifecycle.
             </h1>
-            <p style={{ ...leadStyle(21, SLATE), margin: '24px 0 0', maxWidth: 520 }}>
-              P2P is the platform Miller³ deploys to score readiness, unify procurement and AP data,
-              and run a disciplined intelligence layer over your existing ERP — without replacing
-              anything you already own.
+            <p style={{ ...leadStyle(20, SLATE), margin: '22px 0 0', maxWidth: 520 }}>
+              The Procure-To-Pay Intelligence System is the platform Miller³ Consulting deploys to score readiness and unify
+              your procurement data — from solicitation to PO to payments — into a disciplined intelligence
+              layer over your existing ERP, without replacing anything you already own.
             </p>
-            <div style={{ display: 'flex', gap: 12, marginTop: 32, flexWrap: 'wrap' }}>
-              <Button variant="primary" size="lg" href="#cta">Start a readiness assessment →</Button>
-              <Button variant="accent" size="lg" href="#cta">Schedule a demo →</Button>
-              <Button variant="ghost" size="lg" href="#video">Watch the 2-min tour</Button>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 38,
-                          paddingTop: 24, borderTop: `1px solid ${LINE}`, flexWrap: 'wrap' }}>
-              <Eyebrow color={MUTED}>Deployed across</Eyebrow>
-              <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-                {['CITY OF DURHAM', 'CITY OF RALEIGH', 'CITY OF ASHEVILLE'].map(l => (
-                  <span key={l} className="grotesk" style={{ fontSize: 12, color: SLATE, fontWeight: 700,
-                                                              letterSpacing: '0.02em', opacity: 0.62 }}>{l}</span>
-                ))}
-              </div>
+            <div style={{ display: 'flex', gap: 12, marginTop: 30, flexWrap: 'wrap' }}>
+              <Button variant="primary" size="lg" href="https://calendly.com/miller3group/30min">Book a demo →</Button>
             </div>
           </div>
-          {/* right — product glass + floating chip */}
+
+          {/* right — playable product video */}
           <div style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
-            <ProductGlass />
-            <div style={{ position: 'absolute', bottom: -20, left: 0, background: '#fff', borderRadius: 14,
-                          padding: '13px 16px', boxShadow: '0 18px 44px rgba(20,25,58,0.18)',
-                          display: 'flex', alignItems: 'center', gap: 12, border: `1px solid ${LINE}` }}>
-              <MarkThroughput size={38} theme="tile" />
-              <div>
-                <div className="grotesk" style={{ fontSize: 13, color: INK, fontWeight: 700, letterSpacing: '-0.01em' }}>
-                  Fast-Track lane ✓
-                </div>
-                <div className="plex" style={{ fontSize: 9.5, color: MUTED, letterSpacing: '0.06em', marginTop: 1 }}>
-                  Readiness 82 · cleared in 9 days
+            <div onClick={() => setModal(true)}
+                 onMouseOver={() => setHover(true)} onMouseOut={() => setHover(false)}
+                 role="button" aria-label="Play the 2-minute product tour"
+                 style={{ position: 'relative', width: '100%', aspectRatio: '16 / 9', borderRadius: 20,
+                          overflow: 'hidden', cursor: 'pointer', background: NAVY_DEEP,
+                          border: `1px solid ${LINE}`,
+                          boxShadow: hover ? '0 40px 90px -30px rgba(20,25,58,0.5)' : '0 26px 70px -32px rgba(20,25,58,0.42)',
+                          transition: 'box-shadow 200ms ease, transform 200ms ease',
+                          transform: hover ? 'translateY(-2px)' : 'none' }}>
+              {/* product poster */}
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center',
+                            justifyContent: 'center', opacity: 0.5, filter: 'blur(1.5px)' }}>
+                <div style={{ transform: 'scale(1.24)', transformOrigin: 'center' }}><ProductGlass /></div>
+              </div>
+              <div style={{ position: 'absolute', inset: 0,
+                            background: 'linear-gradient(180deg, rgba(20,25,58,0.32) 0%, rgba(20,25,58,0.74) 100%)' }} />
+              {/* play button */}
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 78, height: 78, borderRadius: '50%', background: RED,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              boxShadow: hover ? '0 0 0 13px rgba(195,42,46,0.22)' : '0 0 0 8px rgba(195,42,46,0.16)',
+                              transform: hover ? 'scale(1.06)' : 'scale(1)', transition: 'all 180ms ease' }}>
+                  <svg width="26" height="30" viewBox="0 0 30 34" fill="#fff"><path d="M2 2 L28 17 L2 32 Z" /></svg>
                 </div>
               </div>
+              {/* duration chip */}
+              <div className="mono" style={{ position: 'absolute', top: 14, right: 14, background: 'rgba(13,18,48,0.7)',
+                                             color: '#fff', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
+                                             padding: '5px 10px', borderRadius: 6, backdropFilter: 'blur(4px)' }}>
+                Product tour · 2:20
+              </div>
+              {/* caption */}
+              <div style={{ position: 'absolute', left: 18, bottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <MarkThroughput size={28} theme="dark" />
+                <span className="grotesk" style={{ fontSize: 15, fontWeight: 700, color: '#fff', letterSpacing: '-0.01em',
+                                                    textShadow: '0 1px 12px rgba(0,0,0,0.4)' }}>See P2P in 2 minutes</span>
+              </div>
             </div>
+            {/* prominent watch button — pops on the light background */}
+            <button onClick={() => setModal(true)} className="grotesk"
+                    style={{ position: 'absolute', bottom: -52, left: '50%', transform: 'translateX(-50%)',
+                             display: 'inline-flex', alignItems: 'center', gap: 10, whiteSpace: 'nowrap',
+                             background: RED, backgroundImage: 'linear-gradient(180deg, #D23A3E, #C32A2E)', color: '#fff',
+                             border: '3px solid #fff', borderRadius: 999, padding: '13px 26px',
+                             fontSize: 15, fontWeight: 700, letterSpacing: '-0.01em', cursor: 'pointer',
+                             boxShadow: '0 16px 34px -10px rgba(195,42,46,0.7)', transition: 'transform 150ms ease' }}
+                    onMouseOver={e => { e.currentTarget.style.transform = 'translateX(-50%) translateY(-2px)'; }}
+                    onMouseOut={e => { e.currentTarget.style.transform = 'translateX(-50%)'; }}>
+              <svg width="15" height="17" viewBox="0 0 30 34" fill="#fff"><path d="M2 2 L28 17 L2 32 Z" /></svg>
+              Watch the 2-minute tour
+            </button>
           </div>
         </div>
+
+        {/* lifecycle context strip */}
+        <LifecycleFlow />
+
       </Container>
+      <VideoModal open={modal} onClose={() => setModal(false)} />
     </section>
   );
 }
@@ -115,22 +226,25 @@ function TrustBar() {
 function Problem() {
   const items = [
     { stat: '60%+', label: 'of P2P data lives in disconnected systems no one can join cleanly.' },
-    { stat: '11–18d', label: 'typical PO cycle time, with no live view into where the delay sits.' },
+    { stat: '11–18', unit: 'days', label: 'typical PO cycle time, with no live view into where the delay sits.' },
     { stat: '5–9%', label: 'of spend leaks off-contract because nobody sees it until quarter-end.' },
   ];
   return (
     <Section>
       <Container>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
+        <div className="two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
           <SectionHead
             eyebrow="The P2P gap"
             title="Your ERP records the transaction. It doesn't tell you the story."
-            sub="Procurement, contracts, and AP each hold a piece of the truth — but the gaps between them are where cycle time, leakage, and risk hide. P2P closes those gaps." />
+            sub="Procurement, contracts, and payments each hold a piece of the truth — but the gaps between them are where cycle time, leakage, and risk hide. P2P closes those gaps." />
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {items.map((it, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 22, ...CARD, padding: '22px 26px' }}>
-                <div className="grotesk" style={{ fontSize: 40, fontWeight: 700, color: RED,
-                                                   letterSpacing: '-0.035em', minWidth: 116, lineHeight: 1 }}>{it.stat}</div>
+                <div className="grotesk" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+                                                   minWidth: 116 }}>
+                  <span style={{ fontSize: 40, fontWeight: 700, color: RED, letterSpacing: '-0.035em', lineHeight: 1, whiteSpace: 'nowrap' }}>{it.stat}</span>
+                  {it.unit && <span style={{ fontSize: 14, fontWeight: 700, color: RED, letterSpacing: '0.02em', lineHeight: 1.2, marginLeft: 3 }}>{it.unit}</span>}
+                </div>
                 <div style={{ ...bodyStyle(15.5, SLATE) }}>{it.label}</div>
               </div>
             ))}
@@ -149,7 +263,7 @@ function HowItWorks() {
     { n: '01', title: 'Assess readiness', t: '~2 weeks',
       body: 'A Data Readiness Assessment scores your sources across access, joinability, and KPI coverage — and tells you, honestly, whether you can go live in 45 days.' },
     { n: '02', title: 'Unify your data', t: '~3 weeks',
-      body: 'We connect procurement, contracts, and AP into one structured model that sits beside your ERP. No rip-and-replace. Your system of record stays exactly where it is.' },
+      body: 'We connect procurement, contracts, and payments into one structured model that sits beside your ERP. No rip-and-replace. Your system of record stays exactly where it is.' },
     { n: '03', title: 'Operate with intelligence', t: 'Day 45+',
       body: 'Live readiness, cycle time, leakage, and vendor risk — plus the alerts and playbooks that turn the numbers into action across your team.' },
   ];
@@ -299,7 +413,7 @@ function ProductSection() {
       <Container>
         <SectionHead center eyebrow="Inside the product"
           title="The whole procure-to-pay picture, live."
-          sub="Built for the people who run procurement and AP — and the executives who answer for them." />
+          sub="Built for the people who run procurement end to end — and the executives who answer for them." />
         <div style={{ marginTop: 48, display: 'flex', justifyContent: 'center' }}>
           <div style={{ transform: 'scale(1.18)', transformOrigin: 'top center', paddingBottom: 86 }}>
             <ProductGlass />
@@ -466,4 +580,5 @@ function FinalCTA() {
 Object.assign(window, {
   Hero, TrustBar, Problem, HowItWorks, ReadinessShowcase, Features,
   ProductSection, Outcomes, Deployment, Testimonial, FinalCTA, ChevTick,
+  VideoModal, LifecycleFlow,
 });

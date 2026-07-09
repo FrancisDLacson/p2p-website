@@ -31,15 +31,13 @@ function P2P({ size = 48, fg = NAVY, accent = RED, weight = 700, tracking = '-0.
   );
 }
 
-// "P2P · IS" — short product mark with separator
+// "P2P" — short product mark (no trailing "IS")
 function P2P_IS({ size = 24, fg = NAVY, accent = RED, weight = 600 }) {
   return (
     <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: weight, fontSize: size,
                     color: fg, letterSpacing: '-0.02em', lineHeight: 1, whiteSpace: 'nowrap',
-                    display: 'inline-flex', alignItems: 'baseline', gap: size * 0.18 }}>
+                    display: 'inline-flex', alignItems: 'baseline' }}>
       <span>P<span style={{ color: accent }}>2</span>P</span>
-      <span style={{ color: accent, fontWeight: weight, fontSize: size * 0.4, transform: 'translateY(-1px)' }}>·</span>
-      <span style={{ fontSize: size * 0.7, color: fg, opacity: 0.8 }}>IS</span>
     </span>
   );
 }

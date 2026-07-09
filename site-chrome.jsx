@@ -15,6 +15,8 @@ const PAGES = window.__P2P_PAGES || {
   readiness: 'readiness.html',
   about:     'about.html',
   signin:    'signin.html',
+  problem:   'index.html#problem',
+  how:       'index.html#how',
 };
 
 function Nav({ current = 'home' }) {
@@ -69,20 +71,14 @@ function Nav({ current = 'home' }) {
 
 function Footer() {
   const cols = [
-    { h: 'Platform', items: [
-      ['Readiness scoring', PAGES.platform], ['Pipeline observability', PAGES.platform],
-      ['Leakage alerts', PAGES.platform], ['Vendor risk', PAGES.platform], ['Integrations', PAGES.platform] ] },
-    { h: 'Company', items: [
-      ['Customers', PAGES.customers], ['Pricing', PAGES.pricing], ['About Miller³', PAGES.about],
-      ['Careers', '#'], ['Contact', '#'] ] },
-    { h: 'Resources', items: [
-      ['Readiness assessment', PAGES.readiness], ['Pricing model', PAGES.pricing],
-      ['Documentation', '#'], ['Security', '#'], ['Status', '#'] ] },
+    { h: 'Sitemap', items: [
+      ['The gap', PAGES.problem], ['Platform', PAGES.platform], ['Quick diagnostic', PAGES.readiness],
+      ['How it works', PAGES.how], ['Pricing', PAGES.pricing], ['About', PAGES.about] ] },
   ];
   return (
     <footer style={{ background: NAVY_DEEP, color: '#fff', padding: '64px 0 32px' }}>
       <Container>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr', gap: 40 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 40, maxWidth: 620 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
               <MarkThroughput size={36} theme="dark" />

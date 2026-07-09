@@ -91,6 +91,7 @@ function Button({ children, variant = 'primary', size = 'md', href = '#', style 
   }[variant];
   return (
     <a href={href} className="grotesk"
+       {...(/^https?:/.test(href) ? { target: '_blank', rel: 'noopener' } : {})}
        style={{ display: 'inline-flex', alignItems: 'center', gap: 8, borderRadius: 14,
                 fontWeight: 600, letterSpacing: '-0.01em', whiteSpace: 'nowrap',
                 transition: 'transform 160ms cubic-bezier(0.22,0.61,0.36,1), box-shadow 160ms ease',

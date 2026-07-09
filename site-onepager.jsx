@@ -10,6 +10,8 @@ const {
   ProductSection, Outcomes, Deployment, ChevTick, Footer,
   SECTION_PAD, HEAD_GAP, GAP, bodyStyle, leadStyle, CARD, hoverLift,
   NAVY, NAVY_DEEP, NAVY_LO, NAVY_50, RED, RED_SOFT, INK, SLATE, MUTED, SAND, CREAM, LINE, LINE2,
+  QuickDiagnostic, submitLead,
+  useTweaks, TweaksPanel, TweakSection, TweakRadio,
 } = window;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -41,11 +43,11 @@ function DraftRibbon() {
 // ═══════════════════════════════════════════════════════════════════════════
 const NAV_LINKS = [
   { id: 'problem',   label: 'The gap' },
-  { id: 'how',       label: 'How it works' },
-  { id: 'readiness', label: 'Readiness' },
   { id: 'platform',  label: 'Platform' },
+  { id: 'readiness', label: 'Quick diagnostic' },
+  { id: 'how',       label: 'How it works' },
   { id: 'pricing',   label: 'Pricing' },
-  { id: 'customers', label: 'Customers' },
+  { id: 'about',     label: 'About' },
 ];
 
 function OnePagerNav() {
@@ -81,7 +83,7 @@ function OnePagerNav() {
           <P2P_IS size={17} fg={INK} accent={RED} weight={700} />
         </a>
         <div style={{ width: 1, height: 20, background: LINE2, marginLeft: 2 }} />
-        <nav style={{ display: 'flex', gap: 2, flexWrap: 'nowrap' }}>
+        <nav className="nav-links" style={{ display: 'flex', gap: 2, flexWrap: 'nowrap' }}>
           {NAV_LINKS.map(l => {
             const on = active === l.id;
             return (
@@ -97,8 +99,7 @@ function OnePagerNav() {
           })}
         </nav>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <a href="#about" className="grotesk" style={{ fontSize: 13, fontWeight: 600, color: INK, whiteSpace: 'nowrap' }}>About</a>
-          <Button variant="primary" size="sm" href="#cta">Request a DRA</Button>
+          <Button variant="primary" size="sm" href="https://calendly.com/miller3group/30min">Book a demo</Button>
         </div>
         </div>
       </div>
@@ -124,15 +125,16 @@ function VideoSection() {
         ))}
       </svg>
       <Container style={{ position: 'relative' }}>
-        <div style={{ textAlign: 'center', maxWidth: 700, margin: '0 auto 40px' }}>
-          <Eyebrow center color={RED_SOFT}>See it in action</Eyebrow>
-          <h2 className="grotesk" style={{ fontSize: 'clamp(28px,3.6vw,42px)', fontWeight: 700,
-                                            letterSpacing: '-0.035em', lineHeight: 1.05, margin: '14px 0 0' }}>
-            The product tour, in two minutes.
+        <div style={{ textAlign: 'center', maxWidth: 740, margin: '0 auto 40px' }}>
+          <Eyebrow center color={RED_SOFT}>Watch · 2 min</Eyebrow>
+          <h2 className="grotesk" style={{ fontSize: 'clamp(29px,3.8vw,46px)', fontWeight: 700,
+                                            letterSpacing: '-0.035em', lineHeight: 1.04, margin: '14px 0 0' }}>
+            See scattered procurement data become one live score.
           </h2>
-          <p style={{ ...leadStyle(19, 'rgba(255,255,255,0.82)'), margin: '16px auto 0', maxWidth: 560 }}>
-            Watch P2P score readiness, unify procurement and AP data, and turn it into live
-            intelligence — then book time to see it running on your own stack.
+          <p style={{ ...leadStyle(19, 'rgba(255,255,255,0.82)'), margin: '16px auto 0', maxWidth: 600 }}>
+            In two minutes, watch P2P read your existing ERP, AP, and contract systems — read-only —
+            and turn them into a readiness score, a legible pipeline, and alerts you can act on today.
+            This is what your finance team would see on day one.
           </p>
         </div>
 
@@ -187,7 +189,7 @@ function VideoSection() {
 
         {/* schedule-a-demo CTA */}
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginTop: 36 }}>
-          <Button variant="accent" size="lg" href="#cta">Schedule a demo →</Button>
+          <Button variant="accent" size="lg" href="https://calendly.com/miller3group/30min">Schedule a demo →</Button>
           <Button variant="ghost" size="lg" dark href="#platform">Explore the platform</Button>
         </div>
       </Container>
@@ -200,7 +202,7 @@ function VideoSection() {
 // ═══════════════════════════════════════════════════════════════════════════
 function Dimensions() {
   const dims = [
-    { n: '01', t: 'Access', q: 'Can we reach the data?', d: 'We inventory every procurement, contract, and AP source and confirm we can read it cleanly — credentials, APIs, exports, the lot.', score: 94 },
+    { n: '01', t: 'Access', q: 'Can we reach the data?', d: 'We inventory every procurement, contract, and payment source and confirm we can read it cleanly — credentials, APIs, exports, the lot.', score: 94 },
     { n: '02', t: 'Joinability', q: 'Does it connect?', d: 'Vendors, POs, contracts, and invoices have to link by shared keys. We test whether your records actually join — or quietly don\u2019t.', score: 87 },
     { n: '03', t: 'KPI coverage', q: 'Can we measure what matters?', d: 'Cycle time, leakage, on-time payment, vendor risk — we check the fields exist and are trustworthy enough to drive a KPI.', score: 78 },
   ];
@@ -258,8 +260,10 @@ function Architecture() {
           </div>
           <div style={{ background: NAVY_DEEP, borderRadius: 22, padding: '28px 22px', color: '#fff', textAlign: 'center',
                         boxShadow: '0 24px 50px rgba(20,25,58,0.25)' }}>
-            <MarkThroughput size={56} theme="dark" />
-            <P2P size={30} fg="#fff" accent={RED_SOFT} weight={700} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+              <MarkThroughput size={40} theme="dark" />
+              <P2P size={30} fg="#fff" accent={RED_SOFT} weight={700} />
+            </div>
             <div className="plex" style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.6)', letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 600, marginTop: 8 }}>
               Unified data model + intelligence
             </div>
@@ -288,18 +292,18 @@ function Architecture() {
 // ═══════════════════════════════════════════════════════════════════════════
 function Plans() {
   const plans = [
-    { name: 'Assess', tag: 'Start here', price: 'Fixed fee', unit: 'from $18k',
+    { name: 'Assess', tag: 'Start here', price: 'Fixed fee', unit: 'from $35k',
       desc: 'A Data Readiness Assessment. Score your sources, set the tier, get a fixed-fee path to go-live.',
-      features: ['2-week engagement', 'Source-by-source scoring', 'Readiness report + tier', 'Fixed-fee deployment quote', 'Credited toward Deploy'],
-      cta: 'Request a DRA', href: '#cta', accent: false },
+      features: ['2–6 week engagement', 'Source-by-source scoring', 'Readiness report + tier', 'Fixed-fee deployment quote', 'Credited toward Deploy'],
+      cta: 'Talk to the team', href: 'https://calendly.com/miller3group/30min', accent: false },
     { name: 'Deploy', tag: 'Most popular', price: 'Fixed fee', unit: 'by readiness tier',
       desc: 'The 45-day implementation. Connect sources, build the model, validate, and go live.',
       features: ['45-day go-live (Fast-Track)', 'Read-only ERP connectors', 'Unified P2P data model', 'Dashboards + alerts + playbooks', 'Reconciled against your ERP', 'Team enablement'],
-      cta: 'Talk to the team', href: '#cta', accent: true },
+      cta: 'Talk to the team', href: 'https://calendly.com/miller3group/30min', accent: true },
     { name: 'Operate', tag: 'Ongoing', price: 'Annual', unit: 'by data scale',
       desc: 'The platform subscription. Live intelligence, monitoring, and support, priced to your volume.',
       features: ['Live readiness monitoring', 'Unlimited dashboards & users', 'Anomaly & leakage alerts', 'Quarterly business reviews', 'Audit-grade controls & lineage', 'SLA-backed support'],
-      cta: 'Get a quote', href: '#cta', accent: false },
+      cta: 'Talk to the team', href: 'https://calendly.com/miller3group/30min', accent: false },
   ];
   return (
     <Section>
@@ -349,147 +353,6 @@ function Plans() {
   );
 }
 
-function Comparison() {
-  const rows = [
-    ['', 'Assess', 'Deploy', 'Operate'],
-    ['Readiness scoring', '✓', '✓', '✓'],
-    ['Source connectors', '—', '✓', '✓'],
-    ['Unified data model', '—', '✓', '✓'],
-    ['Dashboards & pipeline view', '—', '✓', '✓'],
-    ['Alerts & playbooks', '—', '✓', '✓'],
-    ['Live readiness monitoring', '—', '—', '✓'],
-    ['Quarterly business reviews', '—', '—', '✓'],
-    ['SLA-backed support', '—', '—', '✓'],
-  ];
-  return (
-    <Section alt>
-      <Container style={{ maxWidth: 880 }}>
-        <SectionHead center eyebrow="What's included" title="Three stages, one path." />
-        <div style={{ marginTop: HEAD_GAP, background: '#fff', borderRadius: 22, border: `1px solid ${LINE}`, overflow: 'hidden', boxShadow: '0 18px 46px -20px rgba(20,25,58,0.18)' }}>
-          {rows.map((r, i) => (
-            <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr 1fr 1fr',
-                                  borderTop: i ? `1px solid ${LINE}` : 'none',
-                                  background: i === 0 ? SAND : '#fff' }}>
-              {r.map((cell, j) => {
-                const head = i === 0;
-                const yes = cell === '✓';
-                return (
-                  <div key={j} style={{ padding: '13px 18px', textAlign: j === 0 ? 'left' : 'center',
-                                        fontFamily: head ? "'Space Grotesk', sans-serif" : "'Manrope', sans-serif",
-                                        fontSize: head ? 13 : 13.5, fontWeight: head ? 700 : (j === 0 ? 600 : 700),
-                                        letterSpacing: head ? '0.02em' : '0',
-                                        color: head ? INK : (j === 0 ? INK : (yes ? OK : MUTED)) }}>
-                    {cell}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      </Container>
-    </Section>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// CUSTOMERS — case studies + quotes
-// ═══════════════════════════════════════════════════════════════════════════
-function CaseStudies() {
-  const cases = [
-    { org: 'City of Raleigh', sector: 'Municipal · Finance', score: 82, initials: 'CR',
-      challenge: 'An 18-day PO cycle no one could explain, across three disconnected systems.',
-      result: 'Live in 41 days. Cycle time cut to 11.4 days; the bottleneck turned out to be a manual approval step P2P surfaced in week six.',
-      metric: '−38%', metricLabel: 'PO cycle time' },
-    { org: 'City of Durham', sector: 'Municipal · Procurement', score: 74, initials: 'CD',
-      challenge: 'Off-contract spend was only visible at quarter-end — millions leaked before anyone noticed.',
-      result: 'Standard-tier deployment with light remediation. Leakage alerts now fire the day spend goes off-contract.',
-      metric: '$4.2M', metricLabel: 'leakage recovered / yr' },
-    { org: 'City of Asheville', sector: 'Municipal · Finance', score: 88, initials: 'CA',
-      challenge: 'Audit prep took weeks of manual reconciliation across procurement and AP.',
-      result: 'Fast-Track go-live in 38 days. Every metric now carries lineage; audit evidence exports in minutes, not weeks.',
-      metric: '94.6%', metricLabel: 'on-time payment' },
-  ];
-  return (
-    <Section>
-      <Container>
-        <SectionHead center eyebrow="Case studies"
-          title="The score, then the outcome."
-          sub="Every story starts with a readiness number and ends with a metric that moved." />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: GAP, marginTop: HEAD_GAP }}>
-          {cases.map((c, i) => (
-            <div key={i} style={{ background: '#fff', borderRadius: 24, border: `1px solid ${LINE}`, boxShadow: '0 18px 46px -20px rgba(20,25,58,0.18)',
-                                  display: 'grid', gridTemplateColumns: '200px 1fr 200px', overflow: 'hidden' }}>
-              <div style={{ background: NAVY_DEEP, color: '#fff', padding: 26, display: 'flex',
-                            flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14, textAlign: 'center' }}>
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(255,255,255,0.10)',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 18 }}>{c.initials}</div>
-                <div>
-                  <div className="grotesk" style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.01em', lineHeight: 1.2 }}>{c.org}</div>
-                  <div className="plex" style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.55)', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 4 }}>{c.sector}</div>
-                </div>
-                <ReadinessRing value={c.score} size={84} dark />
-              </div>
-              <div style={{ padding: '28px 30px', display: 'flex', flexDirection: 'column', gap: 16, justifyContent: 'center' }}>
-                <div>
-                  <div className="plex" style={{ fontSize: 9.5, color: RED, letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700, marginBottom: 5 }}>Challenge</div>
-                  <p style={{ ...bodyStyle(15.5, INK), margin: 0 }}>{c.challenge}</p>
-                </div>
-                <div>
-                  <div className="plex" style={{ fontSize: 9.5, color: OK, letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700, marginBottom: 5 }}>Result</div>
-                  <p style={{ ...bodyStyle(15.5, SLATE), margin: 0 }}>{c.result}</p>
-                </div>
-              </div>
-              <div style={{ borderLeft: `1px solid ${LINE}`, padding: 26, display: 'flex', flexDirection: 'column',
-                            alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: SAND }}>
-                <div className="grotesk" style={{ fontSize: 44, fontWeight: 700, color: RED, letterSpacing: '-0.04em', lineHeight: 1 }}>{c.metric}</div>
-                <div className="plex" style={{ fontSize: 10.5, color: MUTED, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600, marginTop: 8, maxWidth: 130 }}>{c.metricLabel}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="plex" style={{ textAlign: 'center', fontSize: 11.5, color: MUTED, marginTop: 22, letterSpacing: '0.03em', fontStyle: 'italic' }}>
-          Draft note — customer names, scores, and quotes below are illustrative pending client sign-off.
-        </div>
-      </Container>
-    </Section>
-  );
-}
-
-function Quotes() {
-  const quotes = [
-    { q: 'We knew our PO cycle was slow. We didn\u2019t know where. P2P showed us in week six.', n: 'Renee Kwon', r: 'Finance Director · City of Raleigh', i: 'RK' },
-    { q: 'The readiness score meant no surprises. We knew the timeline and the fee before we signed.', n: 'Marcus Bell', r: 'Procurement Director · City of Durham', i: 'MB' },
-    { q: 'Audit prep went from three weeks to an afternoon. The lineage is all there.', n: 'Dana Ortiz', r: 'Controller · City of Asheville', i: 'DO' },
-  ];
-  return (
-    <Section alt>
-      <Container>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: GAP }}>
-          {quotes.map((qt, i) => (
-            <div key={i} style={{ background: '#fff', borderRadius: 22, border: `1px solid ${LINE}`, padding: 28, boxShadow: '0 18px 46px -20px rgba(20,25,58,0.18)',
-                                  display: 'flex', flexDirection: 'column', gap: 18 }}>
-              <MarkThroughput size={32} theme="tile" />
-              <blockquote className="news" style={{ fontSize: 18, color: INK, lineHeight: 1.4, margin: 0, fontStyle: 'italic', fontWeight: 500, flex: 1 }}>
-                “{qt.q}”
-              </blockquote>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-                <div style={{ width: 38, height: 38, borderRadius: '50%', background: NAVY, color: '#fff',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 13 }}>{qt.i}</div>
-                <div>
-                  <div className="grotesk" style={{ fontSize: 14, fontWeight: 700, color: INK, letterSpacing: '-0.01em' }}>{qt.n}</div>
-                  <div className="plex" style={{ fontSize: 10.5, color: MUTED, letterSpacing: '0.06em' }}>{qt.r}</div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Container>
-    </Section>
-  );
-}
-
 // ═══════════════════════════════════════════════════════════════════════════
 // ABOUT — the firm behind the platform
 // ═══════════════════════════════════════════════════════════════════════════
@@ -498,22 +361,20 @@ function Story() {
     <Section>
       <Container>
         <div style={{ display: 'grid', gridTemplateColumns: '0.8fr 1.2fr', gap: 56, alignItems: 'start' }}>
-          <SectionHead eyebrow="About · Miller³" title="Built from a hundred procurement engagements." />
+          <SectionHead eyebrow="About · Miller³ Consulting" title="Built from a hundred procurement assessments." />
           <div>
             <p style={{ ...leadStyle(20, INK), margin: 0 }}>
-              Miller³ Consulting spent years walking into the same room: a finance team that knew its
-              procure-to-pay process was leaking time and money, and an ERP that could prove every
-              transaction but explain none of them.
+              Miller³ Consulting has assessed over 100 procurement departments. Across those engagements, the
+              same patterns kept surfacing in how procurement departments are designed.
             </p>
             <p style={{ ...bodyStyle(16.5, SLATE), margin: '18px 0 0' }}>
-              We kept building the same intelligence layer by hand — scoring data readiness, joining
-              procurement, contracts, and AP, and standing up the dashboards that finally made the
-              pipeline legible. P2P is that work, productized: the disciplined method we ran on
-              engagement after engagement, now a platform any team can deploy in 45 days.
+              P2P was born out of that pattern-matching, informed by a hundred real procurement environments
+              rather than built from theory. Every readiness score and pricing recommendation in the platform
+              follows the same discipline we use in the field: we price the work to data complexity before we
+              commit to a delivery date, and we validate feasibility of our 45-day implementation before it starts.
             </p>
             <p style={{ ...bodyStyle(16.5, SLATE), margin: '16px 0 0' }}>
-              It stays true to how Miller³ works — we price the risk before we promise a date, we sit
-              beside your systems instead of replacing them, and we never ship a number we can’t trace.
+              P2P sits alongside your existing systems. It is not a replacement for your ERP or procurement platform.
             </p>
           </div>
         </div>
@@ -555,47 +416,6 @@ function Principles() {
   );
 }
 
-function ByTheNumbers() {
-  const stats = [
-    { v: '12', u: 'yrs', l: 'Miller³ in procurement & finance advisory' },
-    { v: '140+', u: '', l: 'P2P engagements delivered' },
-    { v: '6', u: 'ERPs', l: 'Supported out of the box' },
-    { v: '45', u: 'days', l: 'Typical kickoff to go-live' },
-  ];
-  return (
-    <section style={{ background: NAVY_DEEP, color: '#fff', padding: `clamp(64px, 7vw, 88px) 0`, position: 'relative', overflow: 'hidden' }}>
-      <svg width="100%" height="100%" viewBox="0 0 1200 300" preserveAspectRatio="none"
-           style={{ position: 'absolute', inset: 0, opacity: 0.08 }}>
-        {[0,1,2,3,4,5].map(i => (
-          <path key={i} d={`M -50 ${60+i*44} C 250 ${30+i*44}, 450 ${90+i*44}, 700 ${60+i*44} S 1150 ${30+i*44}, 1300 ${60+i*44}`}
-                fill="none" stroke={RED} strokeWidth="3" />
-        ))}
-      </svg>
-      <Container style={{ position: 'relative' }}>
-        <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <Eyebrow center color={RED_SOFT}>The firm</Eyebrow>
-          <h2 className="grotesk" style={{ fontSize: 'clamp(28px,3.4vw,40px)', fontWeight: 700,
-                                            letterSpacing: '-0.03em', margin: '12px 0 0' }}>
-            Miller³, by the numbers.
-          </h2>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24 }}>
-          {stats.map((s, i) => (
-            <div key={i} style={{ textAlign: 'center', borderLeft: i ? '1px solid rgba(255,255,255,0.14)' : 'none' }}>
-              <div className="grotesk" style={{ fontSize: 'clamp(38px,4.6vw,58px)', fontWeight: 700,
-                                                 letterSpacing: '-0.04em', lineHeight: 1 }}>
-                {s.v}<span style={{ fontSize: '0.4em', color: RED_SOFT, marginLeft: 4 }}>{s.u}</span>
-              </div>
-              <div className="plex" style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', lineHeight: 1.45,
-                                              marginTop: 14, maxWidth: 200, marginLeft: 'auto', marginRight: 'auto', fontWeight: 500 }}>{s.l}</div>
-            </div>
-          ))}
-        </div>
-      </Container>
-    </section>
-  );
-}
-
 // ═══════════════════════════════════════════════════════════════════════════
 // CTA — the DRA request form (the real conversion surface)
 // ═══════════════════════════════════════════════════════════════════════════
@@ -608,7 +428,7 @@ function RequestForm() {
   return (
     <section id="cta" style={{ padding: '64px 0 100px' }}>
       <Container>
-        <div style={{ background: NAVY, borderRadius: 24, padding: 'clamp(36px, 5vw, 60px)', color: '#fff',
+        <div className="two-col" style={{ background: NAVY, borderRadius: 24, padding: 'clamp(36px, 5vw, 60px)', color: '#fff',
                       position: 'relative', overflow: 'hidden',
                       display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center' }}>
           <svg width="360" height="100%" viewBox="0 0 360 320" preserveAspectRatio="xMaxYMid slice"
@@ -619,21 +439,15 @@ function RequestForm() {
             ))}
           </svg>
           <div style={{ position: 'relative' }}>
-            <Eyebrow color={RED_SOFT}>Start with the score</Eyebrow>
+            <Eyebrow color={RED_SOFT}>Quick Diagnostic</Eyebrow>
             <h2 className="grotesk" style={{ fontSize: 'clamp(30px,3.8vw,46px)', fontWeight: 700,
                                               letterSpacing: '-0.035em', lineHeight: 1.04, margin: '14px 0 0' }}>
-              Find out if you’re ready in two weeks.
+              Tell us a bit about your setup. We'll tell you if your data is ready.
             </h2>
             <p className="news" style={{ fontSize: 18, color: 'rgba(255,255,255,0.82)', lineHeight: 1.5, margin: '16px 0 0', maxWidth: 420 }}>
-              A Data Readiness Assessment gives you a score, a tier, and a fixed-fee path to go-live —
-              before you commit to anything.
+              A few quick details, then book time with our team — we'll walk through your
+              data readiness live and map the fastest path to go-live.
             </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 26 }}>
-              <ReadinessRing value={82} size={64} dark />
-              <div className="plex" style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', lineHeight: 1.4, maxWidth: 200 }}>
-                Most Fast-Track customers score 80+ and go live in 45 days.
-              </div>
-            </div>
           </div>
           <div style={{ position: 'relative', background: '#fff', borderRadius: 22, padding: 28, boxShadow: '0 30px 70px -28px rgba(0,0,0,0.5)' }}>
             {submitted ? (
@@ -645,28 +459,49 @@ function RequestForm() {
                 </p>
               </div>
             ) : (
-              <form onSubmit={e => { e.preventDefault(); setSubmitted(true); }}
+              <form onSubmit={e => { e.preventDefault();
+                             const f = e.target;
+                             submitLead({ first: f.first.value, last: f.last.value, email: f.email.value,
+                                          company: f.company.value, erp: f.erp.value, spend: f.spend.value,
+                                          bidSystem: f.bidSystem.value, environment: f.environment.value, source: 'dra-request' });
+                             window.open('https://calendly.com/miller3group/30min', '_blank', 'noopener');
+                             setSubmitted(true); }}
                     style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                  <div><label style={labelS}>Full name</label><input style={field} placeholder="Jane Doe" required /></div>
-                  <div><label style={labelS}>Work email</label><input style={field} type="email" placeholder="jane@org.gov" required /></div>
+                <div className="diag-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                  <div><label style={labelS}>First name</label><input name="first" style={field} placeholder="Jane" required /></div>
+                  <div><label style={labelS}>Last name</label><input name="last" style={field} placeholder="Doe" required /></div>
                 </div>
-                <div><label style={labelS}>Organization</label><input style={field} placeholder="Metro Transit Authority" required /></div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                <div><label style={labelS}>Work email</label><input name="email" style={field} type="email" placeholder="jane@company.gov" required /></div>
+                <div><label style={labelS}>Agency</label><input name="company" style={field} placeholder="Metro Transit Authority" required /></div>
+                <div className="diag-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   <div>
-                    <label style={labelS}>Primary ERP</label>
-                    <select style={field} defaultValue="">
+                    <label style={labelS}>ERP system</label>
+                    <select name="erp" style={field} defaultValue="">
                       <option value="" disabled>Select…</option>
-                      {['SAP', 'Oracle', 'Workday', 'NetSuite', 'Coupa', 'Microsoft D365', 'Other'].map(o => <option key={o}>{o}</option>)}
+                      {['SAP', 'Oracle', 'Workday', 'NetSuite', 'Coupa', 'Microsoft D365', 'Other', 'I don’t know'].map(o => <option key={o}>{o}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label style={labelS}>Annual P2P spend</label>
-                    <select style={field} defaultValue="">
+                    <label style={labelS}>Annual spend</label>
+                    <select name="spend" style={field} defaultValue="">
                       <option value="" disabled>Select…</option>
-                      {['< $50M', '$50M – $250M', '$250M – $1B', '> $1B'].map(o => <option key={o}>{o}</option>)}
+                      {['< $50M', '$50M – $250M', '$250M – $1B', '> $1B', 'I don’t know'].map(o => <option key={o}>{o}</option>)}
                     </select>
                   </div>
+                </div>
+                <div>
+                  <label style={labelS}>Do you have a bid management system?</label>
+                  <select name="bidSystem" style={field} defaultValue="">
+                    <option value="" disabled>Select…</option>
+                    {['Yes — a dedicated system', 'Yes — within our ERP', 'No', 'I don’t know', 'Other'].map(o => <option key={o}>{o}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelS}>Is your procurement environment centralized or decentralized?</label>
+                  <select name="environment" style={field} defaultValue="">
+                    <option value="" disabled>Select…</option>
+                    {['Centralized', 'Decentralized', 'Hybrid / mixed', 'I don’t know'].map(o => <option key={o}>{o}</option>)}
+                  </select>
                 </div>
                 <button type="submit" className="grotesk"
                         style={{ width: '100%', justifyContent: 'center', display: 'inline-flex', alignItems: 'center', gap: 8,
@@ -675,10 +510,10 @@ function RequestForm() {
                                  cursor: 'pointer', transition: 'transform 120ms ease, box-shadow 120ms ease' }}
                         onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(20,25,58,0.16)'; }}
                         onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
-                  Request my assessment →
+                  Book a demo →
                 </button>
                 <div className="plex" style={{ fontSize: 11, color: MUTED, textAlign: 'center', letterSpacing: '0.03em' }}>
-                  No commitment. The assessment fee is credited toward deployment.
+                  No commitment. This just gets our conversation started.
                 </div>
               </form>
             )}
@@ -692,26 +527,43 @@ function RequestForm() {
 // ═══════════════════════════════════════════════════════════════════════════
 // APP — single self-contained scroll
 // ═══════════════════════════════════════════════════════════════════════════
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "readinessStyle": "diagnostic"
+}/*EDITMODE-END*/;
+
 function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  const ReadinessTop = t.readinessStyle === 'diagnostic'
+    ? <div id="readiness"><QuickDiagnostic /></div>
+    : <div id="readiness"><ReadinessShowcase /></div>;
+
   return (
     <div id="top">
       <OnePagerNav />
+
+      {/* Video now lives inside the hero — first section, playable, expands fullscreen. */}
       <Hero />
-      <VideoSection />
-      <TrustBar />
+
       <div id="problem"><Problem /></div>
-      <div id="how"><HowItWorks /></div>
-      <div id="readiness"><ReadinessShowcase /><Dimensions /></div>
       <Features />
+      {ReadinessTop}
+      <div id="how"><HowItWorks /></div>
+      <Dimensions />
       <Architecture />
       <ProductSection />
       <Outcomes />
-      <Deployment />
-      <div id="pricing"><Plans /><Comparison /></div>
-      <div id="customers"><CaseStudies /><Quotes /></div>
-      <div id="about"><Story /><Principles /><ByTheNumbers /></div>
+      <div id="pricing"><Plans /></div>
+      <div id="about"><Story /><Principles /></div>
       <RequestForm />
       <Footer />
+
+      <TweaksPanel>
+        <TweakSection label="Readiness section" />
+        <TweakRadio label="Framing" value={t.readinessStyle}
+          options={[{ value: 'diagnostic', label: 'Quick diagnostic' }, { value: 'classic', label: 'Classic' }]}
+          onChange={v => setTweak('readinessStyle', v)} />
+      </TweaksPanel>
     </div>
   );
 }

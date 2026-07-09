@@ -43,6 +43,19 @@
     a { color: inherit; text-decoration: none; }
     button { font-family: inherit; cursor: pointer; }
     ::selection { background: rgba(195,42,46,0.16); }
+
+    /* ── Responsive / mobile ─────────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .hero-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+      .nav-links, .nav-about { display: none !important; }
+      .diag-main { grid-template-columns: 1fr !important; }
+      .two-col { grid-template-columns: 1fr !important; gap: 32px !important; }
+    }
+    @media (max-width: 640px) {
+      .flow-chev { display: none !important; }
+      .lifecycle-tiles .flow-tile { min-width: calc(50% - 3px) !important; flex: 1 1 calc(50% - 3px) !important; }
+      .diag-2col { grid-template-columns: 1fr !important; }
+    }
   </style>
 </head>
 <body>
@@ -68,11 +81,14 @@
   <script type="text/babel" src="modern-marks.jsx"></script>
   <script type="text/babel" src="site-ui.jsx"></script>
   <script type="text/babel" src="site-sections.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="site-diagnostic.jsx"></script>
   <script>
     // One-pager: rewrite shared Footer links to in-page anchors (no cross-page nav).
     window.__P2P_PAGES = {
       home: '#top', platform: '#platform', pricing: '#pricing',
-      customers: '#customers', readiness: '#readiness', about: '#about', signin: '#cta',
+      customers: 'customers.html', readiness: '#readiness', about: '#about', signin: '#cta',
+      problem: '#problem', how: '#how',
     };
   </script>
   <script type="text/babel" src="site-chrome.jsx"></script>
