@@ -68,6 +68,7 @@ function OnePagerNav() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+  const [open, setOpen] = React.useState(false);
   return (
     <header style={{ position: 'sticky', top: 0, zIndex: 100, paddingTop: 12 }}>
       <div style={{ maxWidth: 1160, margin: '0 auto', padding: '0 20px' }}>
@@ -105,11 +106,36 @@ function OnePagerNav() {
                       transition: 'all 140ms ease' }}
              onMouseOver={e => { e.currentTarget.style.opacity = '0.88'; }}
              onMouseOut={e => { e.currentTarget.style.opacity = '1'; }}>
-            ← Miller³ Consulting Website
+            ← <span className="m3-long">Miller³ Consulting Website</span><span className="m3-short">Miller³</span>
           </a>
           <Button variant="primary" size="sm" href="https://outlook.office.com/book/Miller3Consulting1@miller3group.onmicrosoft.com/?ismsaljsauthenabled">Book a demo</Button>
+          <button className="nav-burger" aria-label="Menu" onClick={() => setOpen(o => !o)}
+                  style={{ display: 'none', background: 'transparent', border: `1px solid ${LINE2}`, borderRadius: 10,
+                           width: 40, height: 40, alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 4, padding: 0 }}>
+            <span style={{ display: 'block', width: 17, height: 2, borderRadius: 2, background: INK, transform: open ? 'translateY(3px) rotate(45deg)' : 'none', transition: 'transform 180ms ease' }} />
+            <span style={{ display: 'block', width: 17, height: 2, borderRadius: 2, background: INK, transform: open ? 'translateY(-3px) rotate(-45deg)' : 'none', transition: 'transform 180ms ease' }} />
+          </button>
         </div>
         </div>
+        {open && (
+          <div className="nav-sheet" style={{ marginTop: 8, borderRadius: 20, padding: 14,
+                        background: 'rgba(255,255,255,0.96)', backdropFilter: 'saturate(180%) blur(16px)',
+                        border: '1px solid rgba(255,255,255,0.8)', boxShadow: '0 22px 48px -20px rgba(20,25,58,0.32)',
+                        display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {NAV_LINKS.map(l => (
+              <a key={l.id} href={`#${l.id}`} className="grotesk" onClick={() => setOpen(false)}
+                 style={{ fontSize: 15, fontWeight: 600, color: active === l.id ? INK : SLATE, padding: '13px 12px',
+                          borderRadius: 10, background: active === l.id ? 'rgba(30,40,86,0.06)' : 'transparent' }}>
+                {l.label}
+              </a>
+            ))}
+            <a href="https://www.miller3group.com" target="_blank" rel="noopener" className="grotesk"
+               style={{ marginTop: 8, fontSize: 14, fontWeight: 600, color: '#fff', background: RED,
+                        padding: '13px 14px', borderRadius: 999, textAlign: 'center' }}>
+              ← Miller³ Consulting Website
+            </a>
+          </div>
+        )}
       </div>
     </header>
   );
