@@ -201,7 +201,7 @@ function DataSignal() {
   return (
     <section style={{ background: CREAM, borderTop: `1px solid ${LINE}`, borderBottom: `1px solid ${LINE}` }}>
       <Container style={{ paddingTop: 72, paddingBottom: 72 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '0.34fr 1fr', gap: 48, alignItems: 'start' }}>
+        <div className="two-col" style={{ display: 'grid', gridTemplateColumns: '0.34fr 1fr', gap: 48, alignItems: 'start' }}>
           <Eyebrow>Our foundation</Eyebrow>
           <div style={{ maxWidth: 720, display: 'flex', flexDirection: 'column', gap: 18 }}>
             <p className="grotesk" style={{ fontSize: 22, fontWeight: 700, color: INK, letterSpacing: '-0.02em', lineHeight: 1.28, margin: 0 }}>

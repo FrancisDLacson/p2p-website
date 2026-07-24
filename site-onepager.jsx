@@ -98,7 +98,15 @@ function OnePagerNav() {
             );
           })}
         </nav>
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <a href="https://www.miller3group.com" target="_blank" rel="noopener" className="grotesk nav-m3"
+             style={{ fontSize: 12.5, fontWeight: 600, color: '#fff', padding: '7px 12px', borderRadius: 999,
+                      background: RED, border: `1px solid ${RED}`, whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 5,
+                      transition: 'all 140ms ease' }}
+             onMouseOver={e => { e.currentTarget.style.opacity = '0.88'; }}
+             onMouseOut={e => { e.currentTarget.style.opacity = '1'; }}>
+            ← Miller³ Consulting Website
+          </a>
           <Button variant="primary" size="sm" href="https://outlook.office.com/book/Miller3Consulting1@miller3group.onmicrosoft.com/?ismsaljsauthenabled">Book a demo</Button>
         </div>
         </div>
